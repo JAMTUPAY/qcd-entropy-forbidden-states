@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Entropy Forbidden States - Interactive Explorer</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; text-align: center; }
+        .doi-badge { text-align: center; margin: 20px 0; }
+        .stats { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 10px; margin: 20px 0; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 15px; }
+        .stat-card { background: rgba(255,255,255,0.1); padding: 15px; border-radius: 5px; text-align: center; }
+        .stat-number { font-size: 2em; font-weight: bold; }
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+        th, td { border: 1px solid #e0e0e0; padding: 12px; text-align: left; }
+        th { background: #34495e; color: white; }
+        .allowed { background: #d4edda; }
+        .forbidden { background: #f8d7da; }
+        .threshold { background: #fff3cd; }
+        .links { text-align: center; margin: 30px 0; }
+        .links a { margin: 0 10px; padding: 10px 20px; background: #3498db; color: white; text-decoration: none; border-radius: 5px; display: inline-block; }
+        .links a:hover { background: #2980b9; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>QCD Entropy Forbidden States Explorer</h1>
+        
+        <div class="doi-badge">
+            <a href="https://doi.org/10.5281/zenodo.16752674">
+                <img src="https://zenodo.org/badge/DOI/10.5281/zenodo.16752674.svg" alt="DOI">
+            </a>
+        </div>
+        
+        <div class="stats">
+            <h2 style="text-align: center; margin-top: 0;">Universal Entropy Budget: |ΔS_RG| = 9.81 kB</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">28,721</div>
+                    <div>Configurations Analyzed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">25,831</div>
+                    <div>Allowed States (90.0%)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">2,730</div>
+                    <div>Energy-Forbidden (9.5%)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">160</div>
+                    <div>Pauli-Suppressed (0.5%)</div>
+                </div>
+            </div>
+        </div>
+        
+        <h2>Validated Exotic Hadrons</h2>
+        <table>
+            <tr>
+                <th>State</th>
+                <th>Quarks</th>
+                <th>M_pred (GeV)</th>
+                <th>M_obs (GeV)</th>
+                <th>ΔE (GeV)</th>
+                <th>Status</th>
+                <th>Nature</th>
+            </tr>
+            <tr class="allowed">
+                <td><strong>X(3872)</strong></td>
+                <td>cc̄ud̄</td>
+                <td>3.547</td>
+                <td>3.872</td>
+                <td>-96.5</td>
+                <td>Allowed</td>
+                <td>Deeply bound</td>
+            </tr>
+            <tr class="allowed">
+                <td><strong>Zc(3900)</strong></td>
+                <td>cc̄ud̄</td>
+                <td>3.547</td>
+                <td>3.900</td>
+                <td>-96.5</td>
+                <td>Allowed</td>
+                <td>Deeply bound</td>
+            </tr>
+            <tr class="threshold">
+                <td><strong>X(6900)</strong></td>
+                <td>cc̄cc̄</td>
+                <td>6.809</td>
+                <td>6.900</td>
+                <td>+0.615</td>
+                <td>Threshold</td>
+                <td>Enhancement</td>
+            </tr>
+            <tr class="allowed">
+                <td><strong>Pc(4312)</strong></td>
+                <td>cc̄uud</td>
+                <td>3.668</td>
+                <td>4.312</td>
+                <td>-96.3</td>
+                <td>Allowed</td>
+                <td>Deeply bound</td>
+            </tr>
+            <tr class="allowed">
+                <td><strong>Pc(4440)</strong></td>
+                <td>cc̄uud</td>
+                <td>3.668</td>
+                <td>4.440</td>
+                <td>-96.3</td>
+                <td>Allowed</td>
+                <td>Deeply bound</td>
+            </tr>
+            <tr class="allowed">
+                <td><strong>Pc(4457)</strong></td>
+                <td>cc̄uud</td>
+                <td>3.668</td>
+                <td>4.457</td>
+                <td>-96.3</td>
+                <td>Allowed</td>
+                <td>Deeply bound</td>
+            </tr>
+        </table>
+        
+        <h2>Five Falsifiable Predictions</h2>
+        <ol>
+            <li>No hidden-beauty pentaquark above M = 2Υ + 1 GeV (19.9 GeV)</li>
+            <li>No color-singlet hadron with n < 3|B| quarks</li>
+            <li>All-identical multiquarks (n>3) appear >0.3 GeV above entropy-core mass</li>
+            <li>Light pentaquarks unobservable in heavy-ion collisions</li>
+            <li>Compact tetraquarks within 50 MeV of S-wave thresholds</li>
+        </ol>
+        
+        <div class="links">
+            <a href="https://github.com/JAMTUPAY/qcd-entropy-forbidden-states">GitHub Repository</a>
+            <a href="https://doi.org/10.5281/zenodo.16752674">Zenodo DOI</a>
+            <a href="https://github.com/JAMTUPAY/qcd-entropy-forbidden-states/blob/main/paper/main.tex">LaTeX Source</a>
+        </div>
+    </div>
+</body>
+</html>
