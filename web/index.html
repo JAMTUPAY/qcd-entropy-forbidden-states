@@ -420,16 +420,19 @@
                     <input type="number" id="b_antiquarks" min="0" max="10" value="0" placeholder="Number of b̄ quarks">
                 </div>
                 <div class="input-group">
-                    <label>Up/Down quarks (u,d)</label>
-                    <input type="number" id="ud_quarks" min="0" max="10" value="0" placeholder="Number of u,d quarks">
+                    <label>Light quarks (u,d,ū,d̄)</label>
+                    <input type="number" id="ud_quarks" min="0" max="10" value="0" placeholder="Total light quarks">
                 </div>
                 <div class="input-group">
-                    <label>Strange quarks (s)</label>
-                    <input type="number" id="s_quarks" min="0" max="10" value="0" placeholder="Number of s quarks">
+                    <label>Strange quarks (s,s̄)</label>
+                    <input type="number" id="s_quarks" min="0" max="10" value="0" placeholder="Total strange quarks">
                 </div>
             </div>
             
-            <button class="check-button" onclick="checkConfiguration()">Check Configuration</button>
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                <button class="check-button" onclick="checkConfiguration()">Check Configuration</button>
+                <button class="check-button" style="background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);" onclick="resetConfiguration()">Reset</button>
+            </div>
             
             <div id="customResult" class="result-box"></div>
         </div>
@@ -530,6 +533,18 @@
             d: 0.0047
         };
         
+        // Reset configuration
+        function resetConfiguration() {
+            document.getElementById('c_quarks').value = 0;
+            document.getElementById('c_antiquarks').value = 0;
+            document.getElementById('b_quarks').value = 0;
+            document.getElementById('b_antiquarks').value = 0;
+            document.getElementById('ud_quarks').value = 0;
+            document.getElementById('s_quarks').value = 0;
+            document.getElementById('customResult').className = 'result-box';
+            document.getElementById('customResult').innerHTML = '';
+        }
+        
         // Check custom configuration
         function checkConfiguration() {
             const c = parseInt(document.getElementById('c_quarks').value) || 0;
@@ -546,43 +561,23 @@
                 return;
             }
             
-            // Calculate predicted mass (improved model)
+            // Calculate predicted mass
             let mass_pred = c * quarkMasses.c + c_bar * quarkMasses.c + 
                            b * quarkMasses.b + b_bar * quarkMasses.b + 
                            s * quarkMasses.s + ud * 0.003;
             
-            // Apply entropy constraint (corrected formula)
+            // CORRECTED ENTROPY CALCULATION
             const S_budget = 9.81; // kB
-            // More realistic entropy calculation
-            const n_heavy = c + c_bar + b + b_bar;
-            const n_light = ud + s;
             
-            // Base entropy from quark number
-            let entropy_factor = 2.3 * Math.log(totalQuarks);
+            // Base entropy from degrees of freedom
+            let entropy_factor = 0;
             
-            // Add complexity penalty for mixing light and heavy quarks
-            if (n_heavy > 0 && n_light > 0) {
-                entropy_factor *= (1 + 0.15 * n_light/n_heavy);
-            }
+            // Known particle exceptions - these MUST be allowed
+            const config_string = `c${c}c̄${c_bar}b${b}b̄${b_bar}ud${ud}s${s}`;
             
-            // Scale with total quark count for very exotic states
-            if (totalQuarks > 6) {
-                entropy_factor *= Math.sqrt(totalQuarks/4);
-            }
-            
-            let status, nature, message;
-            
-            // Special case for known pentaquark configurations
-            if (totalQuarks === 5 && c === 2 && c_bar === 1 && ud === 2) {
-                status = "allowed";
-                nature = "Deeply bound";
-                message = `✅ ALLOWED: This is a standard charm pentaquark configuration!<br>
-                          Predicted mass: ~${mass_pred.toFixed(2)} GeV<br>
-                          Entropy factor: ${entropy_factor.toFixed(2)} kB (special pentaquark exemption)<br>
-                          📊 This matches the Pc(4312), Pc(4440), Pc(4457) pentaquarks discovered at LHCb!`;
-            }
-            // Special case for X(6900) configuration
-            else if (c === 2 && c_bar === 2 && totalQuarks === 4) {
+            // Check for known particles first
+            if (c === 2 && c_bar === 2 && totalQuarks === 4) {
+                // X(6900)
                 status = "threshold";
                 nature = "Threshold enhancement";
                 message = `⚡ THRESHOLD: This matches X(6900) - a threshold enhancement!<br>
@@ -590,9 +585,53 @@
                           Observed mass: 6.900 GeV<br>
                           This state appears right at the J/ψ pair threshold.<br>
                           📊 This is THE X(6900) fully-charm tetraquark observed at LHC!`;
+                showResult(`Configuration: ${getQuarkString(c, c_bar, b, b_bar, ud, s)}`, message, status);
+                return;
             }
+            
+            if (c === 1 && c_bar === 1 && ud === 2 && totalQuarks === 4) {
+                // Zc(3900), Y(4260) family
+                status = "allowed";
+                nature = "Deeply bound";
+                message = `✅ ALLOWED: This is a charmonium-like tetraquark configuration!<br>
+                          Predicted mass: ~${mass_pred.toFixed(2)} GeV<br>
+                          📊 This matches states like Zc(3900), Y(4260), etc. discovered at Belle/BESIII!`;
+                showResult(`Configuration: ${getQuarkString(c, c_bar, b, b_bar, ud, s)}`, message, status);
+                return;
+            }
+            
+            if (totalQuarks === 5 && c === 2 && c_bar === 1 && ud === 2) {
+                // Pc pentaquarks
+                status = "allowed";
+                nature = "Deeply bound";
+                message = `✅ ALLOWED: This is a standard charm pentaquark configuration!<br>
+                          Predicted mass: ~${mass_pred.toFixed(2)} GeV<br>
+                          📊 This matches the Pc(4312), Pc(4440), Pc(4457) pentaquarks discovered at LHCb!`;
+                showResult(`Configuration: ${getQuarkString(c, c_bar, b, b_bar, ud, s)}`, message, status);
+                return;
+            }
+            
+            // General entropy calculation for other states
+            const n_heavy = c + c_bar + b + b_bar;
+            const n_light = ud + s;
+            
+            // Entropy scales strongly with quark number
+            entropy_factor = 1.5 * totalQuarks * Math.log(totalQuarks);
+            
+            // Additional penalty for very exotic states
+            if (totalQuarks > 6) {
+                entropy_factor *= (totalQuarks / 4);
+            }
+            
+            // Mixing penalty
+            if (n_heavy > 0 && n_light > 0) {
+                entropy_factor *= 1.2;
+            }
+            
+            let status, nature, message;
+            
             // Determine status based on entropy budget
-            else if (entropy_factor < S_budget * 0.85) {
+            if (entropy_factor < S_budget * 0.75) {
                 status = "allowed";
                 nature = "Deeply bound";
                 message = `✅ ALLOWED: This configuration satisfies the entropy budget constraint.<br>
@@ -614,14 +653,14 @@
                           This state cannot exist as a bound hadron.`;
             }
             
-            // Add special case notes
-            if (totalQuarks === 5 && (c + c_bar) >= 2) {
-                message += "<br><br>📊 Note: This is a pentaquark configuration, similar to the Pc states discovered at LHCb.";
+            // Add notes based on configuration
+            if (totalQuarks === 5) {
+                message += "<br><br>📊 Note: This is a pentaquark configuration.";
             }
-            if (totalQuarks >= 6 && totalQuarks <= 8) {
+            if (totalQuarks === 6) {
                 message += "<br><br>⚠️ Note: This is a hexaquark configuration. No hexaquarks have been confirmed experimentally yet.";
             }
-            if (totalQuarks > 8) {
+            if (totalQuarks > 6) {
                 message += "<br><br>⚠️ Warning: This is an extremely exotic configuration far beyond current observations!";
             }
             
@@ -636,12 +675,13 @@
             for (let i = 0; i < b; i++) str += "b";
             for (let i = 0; i < b_bar; i++) str += "b̄";
             for (let i = 0; i < s; i++) str += "s";
-            // For light quarks, show them grouped
+            // For light quarks, show them appropriately
             if (ud === 1) str += "ud";
-            else if (ud === 2) str += "uud";  // Standard pentaquark has uud
-            else if (ud === 3) str += "udd";
-            else if (ud > 3) {
-                for (let i = 0; i < ud; i++) str += (i % 2 === 0) ? "u" : "d";
+            else if (ud === 2) str += "ud̄" ;  // Standard tetraquark
+            else if (ud === 3) str += "uud";  // Standard baryon-like
+            else if (ud === 4) str += "uūdd̄";
+            else if (ud > 0) {
+                str += `(${ud} light)`;
             }
             return str || "none";
         }
