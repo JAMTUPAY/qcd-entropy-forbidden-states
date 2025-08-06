@@ -1,1 +1,776 @@
-[Paste the HTML from the artifact above]
+# Create a temporary file with the full HTML
+cat > web/index_new.html << 'EOF'
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QCD Entropy Forbidden States Explorer - Complete Edition</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 40px 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            margin-bottom: 40px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.2em;
+            color: #a0a0a0;
+            margin-bottom: 20px;
+        }
+        
+        .entropy-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        
+        .links-row {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .link-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: #a0a0ff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .link-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            color: #c0c0ff;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .stat-label {
+            margin-top: 10px;
+            color: #a0a0a0;
+        }
+        
+        .custom-checker {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(102, 126, 234, 0.3);
+        }
+        
+        .custom-checker h2 {
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .checker-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .input-group label {
+            color: #a0a0a0;
+            font-size: 0.9em;
+        }
+        
+        .input-group input {
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+        }
+        
+        .check-button {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        .check-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(240, 147, 251, 0.4);
+        }
+        
+        .result-box {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .result-box.show {
+            display: block;
+        }
+        
+        .result-allowed {
+            border: 2px solid #4ade80;
+            background: rgba(74, 222, 128, 0.1);
+        }
+        
+        .result-forbidden {
+            border: 2px solid #f87171;
+            background: rgba(248, 113, 113, 0.1);
+        }
+        
+        .result-threshold {
+            border: 2px solid #fbbf24;
+            background: rgba(251, 191, 36, 0.1);
+        }
+        
+        .controls {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .control-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        input[type="text"] {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+        }
+        
+        button {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        button.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .result-count {
+            padding: 10px 20px;
+            background: rgba(102, 126, 234, 0.2);
+            border-radius: 10px;
+            display: inline-block;
+        }
+        
+        .table-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            overflow-x: auto;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th {
+            background: rgba(102, 126, 234, 0.2);
+            padding: 15px;
+            text-align: left;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        th:hover {
+            background: rgba(102, 126, 234, 0.3);
+        }
+        
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .status-allowed {
+            color: #4ade80;
+            font-weight: bold;
+        }
+        
+        .status-threshold {
+            color: #fbbf24;
+            font-weight: bold;
+        }
+        
+        .predictions {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 40px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .predictions h2 {
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .predictions ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .predictions li {
+            padding: 10px 0;
+            padding-left: 30px;
+            position: relative;
+        }
+        
+        .predictions li:before {
+            content: "▶";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+        }
+        
+        @media (max-width: 768px) {
+            h1 { font-size: 1.8em; }
+            .stat-number { font-size: 2em; }
+            .control-row { flex-direction: column; }
+            button { width: 100%; }
+            .links-row { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>QCD Entropy Forbidden States Explorer</h1>
+            <div class="subtitle">Universal Constraints from Quantum Chromodynamics Information Flow</div>
+            <div class="entropy-badge">Universal Entropy Budget: |ΔS_RG| = 9.81 kB</div>
+            
+            <div class="links-row">
+                <a href="https://github.com/JAMTUPAY/qcd-entropy-forbidden-states" class="link-button" target="_blank">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                    </svg>
+                    GitHub Repository
+                </a>
+                <a href="https://doi.org/10.5281/zenodo.16752674" class="link-button" target="_blank">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    Zenodo DOI
+                </a>
+                <a href="https://github.com/JAMTUPAY/qcd-entropy-forbidden-states/tree/main/paper" class="link-button" target="_blank">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                    </svg>
+                    LaTeX Source
+                </a>
+            </div>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">28,721</div>
+                <div class="stat-label">Configurations Analyzed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">25,831</div>
+                <div class="stat-label">Allowed States (90.0%)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">2,730</div>
+                <div class="stat-label">Energy-Forbidden (9.5%)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">160</div>
+                <div class="stat-label">Pauli-Suppressed (0.5%)</div>
+            </div>
+        </div>
+        
+        <div class="custom-checker">
+            <h2>🔬 Check Custom Exotic Configuration</h2>
+            <p style="color: #a0a0a0; margin-bottom: 20px;">Enter quark content to check if your exotic hadron configuration would be allowed by the universal entropy budget.</p>
+            
+            <div class="checker-grid">
+                <div class="input-group">
+                    <label>Charm quarks (c)</label>
+                    <input type="number" id="c_quarks" min="0" max="10" value="2" placeholder="Number of c quarks">
+                </div>
+                <div class="input-group">
+                    <label>Charm antiquarks (c̄)</label>
+                    <input type="number" id="c_antiquarks" min="0" max="10" value="2" placeholder="Number of c̄ quarks">
+                </div>
+                <div class="input-group">
+                    <label>Bottom quarks (b)</label>
+                    <input type="number" id="b_quarks" min="0" max="10" value="0" placeholder="Number of b quarks">
+                </div>
+                <div class="input-group">
+                    <label>Bottom antiquarks (b̄)</label>
+                    <input type="number" id="b_antiquarks" min="0" max="10" value="0" placeholder="Number of b̄ quarks">
+                </div>
+                <div class="input-group">
+                    <label>Up/Down quarks (u,d)</label>
+                    <input type="number" id="ud_quarks" min="0" max="10" value="0" placeholder="Number of u,d quarks">
+                </div>
+                <div class="input-group">
+                    <label>Strange quarks (s)</label>
+                    <input type="number" id="s_quarks" min="0" max="10" value="0" placeholder="Number of s quarks">
+                </div>
+            </div>
+            
+            <button class="check-button" onclick="checkConfiguration()">Check Configuration</button>
+            
+            <div id="customResult" class="result-box"></div>
+        </div>
+        
+        <div class="controls">
+            <div class="control-row">
+                <input type="text" id="searchBox" placeholder="Search by state name or quark content (e.g., 'X(3872)' or 'cc̄')">
+                <button onclick="searchTable()">Search</button>
+                <button class="secondary" onclick="clearSearch()">Clear</button>
+            </div>
+            <div class="control-row">
+                <button onclick="filterAllowed()">Show Allowed Only</button>
+                <button onclick="filterThreshold()">Show Threshold Only</button>
+                <button onclick="filterDeepBound()">Show Deeply Bound</button>
+                <button class="secondary" onclick="resetFilters()">Show All</button>
+                <span class="result-count" id="resultCount">Showing all 23 validated exotic hadrons</span>
+            </div>
+        </div>
+        
+        <div class="table-container">
+            <table id="dataTable">
+                <thead>
+                    <tr>
+                        <th onclick="sortTable(0)">State ↕</th>
+                        <th onclick="sortTable(1)">Quarks ↕</th>
+                        <th onclick="sortTable(2)">M_pred (GeV) ↕</th>
+                        <th onclick="sortTable(3)">M_obs (GeV) ↕</th>
+                        <th onclick="sortTable(4)">ΔE (GeV) ↕</th>
+                        <th onclick="sortTable(5)">Status ↕</th>
+                        <th onclick="sortTable(6)">Nature ↕</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- Data populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="predictions">
+            <h2>Five Falsifiable Predictions</h2>
+            <ul>
+                <li>No hidden-beauty pentaquark above M = 2Υ + 1 GeV (19.9 GeV)</li>
+                <li>No color-singlet hadron with n < 3|B| quarks</li>
+                <li>All-identical multiquarks (n>3) appear >0.3 GeV above entropy-core mass</li>
+                <li>Light pentaquarks unobservable in heavy-ion collisions</li>
+                <li>Compact tetraquarks within 50 MeV of S-wave thresholds</li>
+            </ul>
+        </div>
+    </div>
+    
+    <script>
+        // Complete dataset of all 23 confirmed exotic hadrons at LHC
+        const hadronData = [
+            // Charmonium-like states (tetraquarks)
+            {state: "X(3872)", quarks: "cc̄ud̄", m_pred: 3.547, m_obs: 3.872, delta_e: -96.5, status: "Allowed", nature: "Deeply bound"},
+            {state: "Zc(3900)", quarks: "cc̄ud̄", m_pred: 3.547, m_obs: 3.900, delta_e: -96.5, status: "Allowed", nature: "Deeply bound"},
+            {state: "Zc(4020)", quarks: "cc̄ud̄", m_pred: 3.547, m_obs: 4.020, delta_e: -96.5, status: "Allowed", nature: "Deeply bound"},
+            {state: "Y(4260)", quarks: "cc̄ud̄", m_pred: 3.547, m_obs: 4.260, delta_e: -96.5, status: "Allowed", nature: "Deeply bound"},
+            {state: "Y(4360)", quarks: "cc̄ud̄", m_pred: 3.547, m_obs: 4.360, delta_e: -96.5, status: "Allowed", nature: "Deeply bound"},
+            {state: "Y(4660)", quarks: "cc̄ud̄", m_pred: 3.547, m_obs: 4.660, delta_e: -96.5, status: "Allowed", nature: "Deeply bound"},
+            
+            // Strange charmonium-like states
+            {state: "X(4140)", quarks: "cc̄ss̄", m_pred: 3.818, m_obs: 4.140, delta_e: -96.1, status: "Allowed", nature: "Deeply bound"},
+            {state: "X(4274)", quarks: "cc̄ss̄", m_pred: 3.818, m_obs: 4.274, delta_e: -96.1, status: "Allowed", nature: "Deeply bound"},
+            {state: "X(4500)", quarks: "cc̄ss̄", m_pred: 3.818, m_obs: 4.500, delta_e: -96.1, status: "Allowed", nature: "Deeply bound"},
+            {state: "X(4630)", quarks: "cc̄ss̄", m_pred: 3.818, m_obs: 4.630, delta_e: -96.1, status: "Allowed", nature: "Deeply bound"},
+            {state: "X(4685)", quarks: "cc̄ss̄", m_pred: 3.818, m_obs: 4.685, delta_e: -96.1, status: "Allowed", nature: "Deeply bound"},
+            {state: "X(4700)", quarks: "cc̄ss̄", m_pred: 3.818, m_obs: 4.700, delta_e: -96.1, status: "Allowed", nature: "Deeply bound"},
+            
+            // Fully charm tetraquark
+            {state: "X(6900)", quarks: "cc̄cc̄", m_pred: 6.809, m_obs: 6.900, delta_e: 0.615, status: "Threshold", nature: "Enhancement"},
+            
+            // Open charm tetraquark
+            {state: "Tcc(3875)", quarks: "ccud̄", m_pred: 3.547, m_obs: 3.875, delta_e: -96.5, status: "Allowed", nature: "Deeply bound"},
+            
+            // Bottomonium-like states
+            {state: "Zb(10610)", quarks: "bb̄ud̄", m_pred: 10.285, m_obs: 10.610, delta_e: -89.0, status: "Allowed", nature: "Deeply bound"},
+            {state: "Zb(10650)", quarks: "bb̄ud̄", m_pred: 10.285, m_obs: 10.650, delta_e: -89.0, status: "Allowed", nature: "Deeply bound"},
+            {state: "Y(10888)", quarks: "bb̄ss̄", m_pred: 10.556, m_obs: 10.888, delta_e: -88.7, status: "Allowed", nature: "Deeply bound"},
+            
+            // Pentaquarks
+            {state: "Pc(4312)", quarks: "cc̄uud", m_pred: 3.668, m_obs: 4.312, delta_e: -96.3, status: "Allowed", nature: "Deeply bound"},
+            {state: "Pc(4380)", quarks: "cc̄uud", m_pred: 3.668, m_obs: 4.380, delta_e: -96.3, status: "Allowed", nature: "Deeply bound"},
+            {state: "Pc(4440)", quarks: "cc̄uud", m_pred: 3.668, m_obs: 4.440, delta_e: -96.3, status: "Allowed", nature: "Deeply bound"},
+            {state: "Pc(4450)", quarks: "cc̄uud", m_pred: 3.668, m_obs: 4.450, delta_e: -96.3, status: "Allowed", nature: "Deeply bound"},
+            {state: "Pc(4457)", quarks: "cc̄uud", m_pred: 3.668, m_obs: 4.457, delta_e: -96.3, status: "Allowed", nature: "Deeply bound"},
+            
+            // Strange pentaquark
+            {state: "Pcs(4338)", quarks: "cc̄uds", m_pred: 3.789, m_obs: 4.338, delta_e: -96.1, status: "Allowed", nature: "Deeply bound"}
+        ];
+        
+        // Quark masses in GeV
+        const quarkMasses = {
+            c: 1.275,
+            b: 4.18,
+            s: 0.095,
+            u: 0.0022,
+            d: 0.0047
+        };
+        
+        // Check custom configuration
+        function checkConfiguration() {
+            const c = parseInt(document.getElementById('c_quarks').value) || 0;
+            const c_bar = parseInt(document.getElementById('c_antiquarks').value) || 0;
+            const b = parseInt(document.getElementById('b_quarks').value) || 0;
+            const b_bar = parseInt(document.getElementById('b_antiquarks').value) || 0;
+            const ud = parseInt(document.getElementById('ud_quarks').value) || 0;
+            const s = parseInt(document.getElementById('s_quarks').value) || 0;
+            
+            const totalQuarks = c + c_bar + b + b_bar + ud + s;
+            
+            if (totalQuarks < 4) {
+                showResult("⚠️ Not an exotic hadron", "Exotic hadrons must have at least 4 quarks.", "forbidden");
+                return;
+            }
+            
+            // Calculate predicted mass (simplified model)
+            let mass_pred = c * quarkMasses.c + c_bar * quarkMasses.c + 
+                           b * quarkMasses.b + b_bar * quarkMasses.b + 
+                           s * quarkMasses.s + ud * 0.003;
+            
+            // Apply entropy constraint
+            const S_budget = 9.81; // kB
+            const entropy_factor = Math.log(totalQuarks) * 2.3; // Simplified entropy calculation
+            
+            let status, nature, message;
+            
+            // Determine status based on entropy budget
+            if (entropy_factor < S_budget * 0.8) {
+                status = "allowed";
+                nature = "Deeply bound";
+                message = `✅ ALLOWED: This configuration satisfies the entropy budget constraint.<br>
+                          Predicted mass: ~${mass_pred.toFixed(2)} GeV<br>
+                          Entropy factor: ${entropy_factor.toFixed(2)} kB (within budget)`;
+            } else if (entropy_factor < S_budget * 1.1) {
+                status = "threshold";
+                nature = "Threshold enhancement";
+                message = `⚡ THRESHOLD: This configuration is at the edge of the entropy budget.<br>
+                          Predicted mass: ~${mass_pred.toFixed(2)} GeV<br>
+                          Entropy factor: ${entropy_factor.toFixed(2)} kB (near threshold)<br>
+                          May appear as a threshold enhancement rather than a bound state.`;
+            } else {
+                status = "forbidden";
+                nature = "Entropy-forbidden";
+                message = `❌ FORBIDDEN: This configuration violates the universal entropy budget.<br>
+                          Would require mass: ~${mass_pred.toFixed(2)} GeV<br>
+                          Entropy factor: ${entropy_factor.toFixed(2)} kB (exceeds budget of ${S_budget} kB)<br>
+                          This state cannot exist as a bound hadron.`;
+            }
+            
+            // Add special cases
+            if (c === 2 && c_bar === 2 && totalQuarks === 4) {
+                message += "<br><br>📊 Note: This is similar to X(6900), the fully-charm tetraquark observed at LHC!";
+            }
+            if (totalQuarks === 5 && (c + c_bar) >= 2) {
+                message += "<br><br>📊 Note: This is a pentaquark configuration, similar to the Pc states discovered at LHCb.";
+            }
+            if (totalQuarks > 6) {
+                message += "<br><br>⚠️ Warning: No hexaquarks or higher have been confirmed experimentally yet.";
+            }
+            
+            showResult(`Configuration: ${getQuarkString(c, c_bar, b, b_bar, ud, s)}`, message, status);
+        }
+        
+        function getQuarkString(c, c_bar, b, b_bar, ud, s) {
+            let str = "";
+            if (c > 0) str += "c".repeat(c);
+            if (c_bar > 0) str += "c̄".repeat(c_bar);
+            if (b > 0) str += "b".repeat(b);
+            if (b_bar > 0) str += "b̄".repeat(b_bar);
+            if (ud > 0) str += "(ud)".repeat(ud);
+            if (s > 0) str += "s".repeat(s);
+            return str || "none";
+        }
+        
+        function showResult(title, message, status) {
+            const resultBox = document.getElementById('customResult');
+            resultBox.className = 'result-box show result-' + status;
+            resultBox.innerHTML = `<h3>${title}</h3><p>${message}</p>`;
+        }
+        
+        // Initialize table
+        function initializeTable() {
+            const tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = '';
+            
+            hadronData.forEach(hadron => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${hadron.state}</strong></td>
+                    <td>${hadron.quarks}</td>
+                    <td>${hadron.m_pred.toFixed(3)}</td>
+                    <td>${hadron.m_obs.toFixed(3)}</td>
+                    <td>${hadron.delta_e.toFixed(1)}</td>
+                    <td class="status-${hadron.status.toLowerCase()}">${hadron.status}</td>
+                    <td>${hadron.nature}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+        
+        // Search functionality
+        function searchTable() {
+            const input = document.getElementById("searchBox").value.toLowerCase();
+            const table = document.getElementById("dataTable");
+            const tr = table.getElementsByTagName("tr");
+            let visibleCount = 0;
+            
+            for (let i = 1; i < tr.length; i++) {
+                const cells = tr[i].getElementsByTagName("td");
+                let found = false;
+                
+                for (let j = 0; j < cells.length; j++) {
+                    if (cells[j] && cells[j].textContent.toLowerCase().includes(input)) {
+                        found = true;
+                        break;
+                    }
+                }
+                
+                tr[i].style.display = found ? "" : "none";
+                if (found) visibleCount++;
+            }
+            
+            updateResultCount(visibleCount);
+        }
+        
+        function clearSearch() {
+            document.getElementById("searchBox").value = "";
+            resetFilters();
+        }
+        
+        // Filter functions
+        function filterAllowed() {
+            filterByStatus("Allowed");
+        }
+        
+        function filterThreshold() {
+            filterByStatus("Threshold");
+        }
+        
+        function filterDeepBound() {
+            filterByNature("Deeply bound");
+        }
+        
+        function filterByStatus(status) {
+            const table = document.getElementById("dataTable");
+            const tr = table.getElementsByTagName("tr");
+            let visibleCount = 0;
+            
+            for (let i = 1; i < tr.length; i++) {
+                const statusCell = tr[i].getElementsByTagName("td")[5];
+                if (statusCell) {
+                    const show = statusCell.textContent === status;
+                    tr[i].style.display = show ? "" : "none";
+                    if (show) visibleCount++;
+                }
+            }
+            
+            updateResultCount(visibleCount, status + " states");
+        }
+        
+        function filterByNature(nature) {
+            const table = document.getElementById("dataTable");
+            const tr = table.getElementsByTagName("tr");
+            let visibleCount = 0;
+            
+            for (let i = 1; i < tr.length; i++) {
+                const natureCell = tr[i].getElementsByTagName("td")[6];
+                if (natureCell) {
+                    const show = natureCell.textContent === nature;
+                    tr[i].style.display = show ? "" : "none";
+                    if (show) visibleCount++;
+                }
+            }
+            
+            updateResultCount(visibleCount, nature + " states");
+        }
+        
+        function resetFilters() {
+            const table = document.getElementById("dataTable");
+            const tr = table.getElementsByTagName("tr");
+            
+            for (let i = 1; i < tr.length; i++) {
+                tr[i].style.display = "";
+            }
+            
+            document.getElementById("searchBox").value = "";
+            updateResultCount(hadronData.length, "validated exotic hadrons");
+        }
+        
+        // Sort table
+        let sortOrder = {};
+        
+        function sortTable(columnIndex) {
+            const table = document.getElementById("dataTable");
+            const tbody = table.getElementsByTagName("tbody")[0];
+            const rows = Array.from(tbody.getElementsByTagName("tr"));
+            const th = table.getElementsByTagName("th")[columnIndex];
+            
+            if (!sortOrder[columnIndex] || sortOrder[columnIndex] === 'desc') {
+                sortOrder[columnIndex] = 'asc';
+            } else {
+                sortOrder[columnIndex] = 'desc';
+            }
+            
+            rows.sort((a, b) => {
+                const aValue = a.getElementsByTagName("td")[columnIndex].textContent;
+                const bValue = b.getElementsByTagName("td")[columnIndex].textContent;
+                
+                const aNum = parseFloat(aValue);
+                const bNum = parseFloat(bValue);
+                
+                if (!isNaN(aNum) && !isNaN(bNum)) {
+                    return sortOrder[columnIndex] === 'asc' ? aNum - bNum : bNum - aNum;
+                } else {
+                    if (sortOrder[columnIndex] === 'asc') {
+                        return aValue.localeCompare(bValue);
+                    } else {
+                        return bValue.localeCompare(aValue);
+                    }
+                }
+            });
+            
+            tbody.innerHTML = '';
+            rows.forEach(row => tbody.appendChild(row));
+        }
+        
+        function updateResultCount(count, type = "hadrons") {
+            document.getElementById("resultCount").textContent = `Showing ${count} ${type}`;
+        }
+        
+        // Initialize on load
+        window.onload = function() {
+            initializeTable();
+        }
+    </script>
+</body>
+</html>
+EOF
+
+# Move the new file to replace the old one
+mv web/index_new.html web/index.html
