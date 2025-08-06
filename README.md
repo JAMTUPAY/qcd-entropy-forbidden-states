@@ -44,6 +44,8 @@ The **[Interactive Explorer](https://jamtupay.github.io/qcd-entropy-forbidden-st
 - `ccuud` - Standard pentaquark configuration
 
 ## Repository Structure
+
+```
 qcd-entropy-forbidden-states/
 ├── code/                    # Python analysis pipeline
 │   ├── entropy_forbidden_states.py
@@ -61,6 +63,7 @@ qcd-entropy-forbidden-states/
 ├── notebooks/              # Jupyter notebooks
 │   └── explore_forbidden_states.ipynb
 └── LICENSE                 # MIT License
+```
 
 ## Quick Start
 
@@ -69,28 +72,36 @@ qcd-entropy-forbidden-states/
 git clone https://github.com/JAMTUPAY/qcd-entropy-forbidden-states.git
 cd qcd-entropy-forbidden-states
 python3 code/entropy_forbidden_states.py
-Test X(6900) Prediction
-bashpython3 code/validate_known_exotics.py
-Use Interactive Explorer
-Visit: https://jamtupay.github.io/qcd-entropy-forbidden-states/web/
-Five Falsifiable Predictions
+```
 
-No hidden-beauty pentaquark above M = 2Υ + 1 GeV (19.9 GeV)
-No color-singlet hadron with n < 3|B| quarks
-All-identical multiquarks (n>3) appear >0.3 GeV above entropy-core mass
-Light pentaquarks unobservable in heavy-ion collisions
-Compact tetraquarks within 50 MeV of S-wave thresholds
+### Test X(6900) Prediction
+```bash
+python3 code/validate_known_exotics.py
+```
 
-Scientific Impact
+### Use Interactive Explorer
+Visit: **[https://jamtupay.github.io/qcd-entropy-forbidden-states/web/](https://jamtupay.github.io/qcd-entropy-forbidden-states/web/)**
+
+## Five Falsifiable Predictions
+
+1. **No hidden-beauty pentaquark** above M = 2Υ + 1 GeV (19.9 GeV)
+2. **No color-singlet hadron** with n < 3|B| quarks
+3. **All-identical multiquarks** (n>3) appear >0.3 GeV above entropy-core mass
+4. **Light pentaquarks** unobservable in heavy-ion collisions
+5. **Compact tetraquarks** within 50 MeV of S-wave thresholds
+
+## Scientific Impact
+
 This work provides the first application of universal entropy constraints to exotic hadrons, offering:
+- A **predictive framework** for undiscovered states
+- **Explanation** for why certain configurations exist while others don't
+- **Validation** of all 23 known exotic hadrons
+- **Quantitative predictions** for future discoveries
 
-A predictive framework for undiscovered states
-Explanation for why certain configurations exist while others don't
-Validation of all 23 known exotic hadrons
-Quantitative predictions for future discoveries
+## Citation
 
-Citation
-bibtex@software{tupay2025entropy,
+```bibtex
+@software{tupay2025entropy,
   author = {Tupay, Johann Anton Michael},
   title = {Entropy-Forbidden Exotic Hadrons: Universal Constraints from QCD Information Flow},
   year = {2025},
@@ -100,30 +111,41 @@ bibtex@software{tupay2025entropy,
   doi = {10.5281/zenodo.16752674},
   url = {https://doi.org/10.5281/zenodo.16752674}
 }
-Original Work
-Based on: Universal Entropy-Mass Relation in QCD
-Interactive Explorer
-🌟 Launch Interactive Explorer
+```
+
+## Original Work
+
+Based on: [Universal Entropy-Mass Relation in QCD](https://zenodo.org/records/16747096)
+
+## Interactive Explorer
+
+🌟 **[Launch Interactive Explorer](https://jamtupay.github.io/qcd-entropy-forbidden-states/web/)**
+
 Features:
+- Real-time configuration checking
+- All 23 confirmed exotic hadrons
+- Custom quark combination validator
+- Predictive mass calculations
+- Entropy budget visualization
 
-Real-time configuration checking
-All 23 confirmed exotic hadrons
-Custom quark combination validator
-Predictive mass calculations
-Entropy budget visualization
+## Author
 
-Author
-Johann Anton Michael Tupay
-Contact: jamtupay@icloud.com
-ORCID: 0009-0008-7661-8698
-License
-MIT License - See LICENSE file
-Acknowledgments
+**Johann Anton Michael Tupay**  
+Contact: jamtupay@icloud.com  
+ORCID: [0009-0008-7661-8698](https://orcid.org/0009-0008-7661-8698)
+
+## License
+
+MIT License - See [LICENSE](LICENSE) file
+
+## Acknowledgments
+
 Special thanks to the particle physics community and the LHC collaborations (LHCb, CMS, ATLAS, Belle) for exotic hadron discoveries that validate this framework.
+
+---
 
 <p align="center">
   <a href="https://jamtupay.github.io/qcd-entropy-forbidden-states/web/">
     <img src="https://img.shields.io/badge/Try%20the-Interactive%20Explorer-blueviolet?style=for-the-badge" alt="Interactive Explorer">
   </a>
 </p>
-```
